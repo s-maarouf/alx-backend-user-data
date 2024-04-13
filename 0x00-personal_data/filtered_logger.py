@@ -6,10 +6,9 @@ import re
 from typing import List
 
 
-def filter_datum(fields: List[str],
-                 redaction: list,
-                 message: str,
-                 separator: str) -> str:
+def filter_datum(
+        fields: List[str], redaction: str, message: str, separator: str,
+) -> str:
     """Replace sensitive information in a message with redaction."""
     for field in fields:
         message = re.sub(f'{field}=[^;]+', f'{field}={redaction}', message)
