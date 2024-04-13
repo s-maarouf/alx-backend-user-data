@@ -11,5 +11,5 @@ def filter_datum(
 ) -> str:
     """Replace sensitive information in a message with redaction."""
     for field in fields:
-        message = re.sub(f'{field}=[^;]+', f'{field}={redaction}', message)
+        message = re.sub(f'{field}=[^{separator}]+', f'{field}={redaction}', message)
     return message
