@@ -3,8 +3,10 @@
 """Personnal data module"""
 
 import re
+import os
 from typing import List
 import logging
+import mysql.connector
 
 
 PII_FIELDS = ("name", "phone", "ssn", "password", "email")
@@ -50,3 +52,19 @@ def get_logger() -> logging.Logger:
     log.propagate = False
     log.addHandler(stream)
     return log
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """Connects to the database and returns a MySQLConnection object."""
+    db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_pass = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME", "")
+    connector = mysql.connector.connect(
+        host=db_host,
+        port=3306,
+        user=db_user,
+        password=db_pass,
+        database=db_name
+    )
+    return connector
