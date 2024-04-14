@@ -7,14 +7,7 @@ from typing import List
 import logging
 
 
-def filter_datum(
-        fields: List[str], redaction: str, message: str, separator: str,
-) -> str:
-    """Replace sensitive information in a message with redaction."""
-    for field in fields:
-        message = re.sub(f'{field}=[^{separator}]+',
-                         f'{field}={redaction}', message)
-    return message
+PII_FIELDS = ("phone", "ssn", "password", "ip", "user_agent")
 
 
 class RedactingFormatter(logging.Formatter):
@@ -36,3 +29,20 @@ class RedactingFormatter(logging.Formatter):
         msg = super(RedactingFormatter, self).format(record)
         txt = filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
         return txt
+
+
+def filter_datum(
+        fields: List[str], redaction: str, message: str, separator: str,
+) -> str:
+    """Replace sensitive information in a message with redaction."""
+    for field in fields:
+        message = re.sub(f'{field}=[^{separator}]+',
+                         f'{field}={redaction}', message)
+    return message
+
+
+def get_logger() -> logging.Logger:
+    """Returns a log object."""
+    log = logging.getLogger("user_data")
+    log.setLevel(logging.INFO)
+    return log
