@@ -43,12 +43,13 @@ def forbidden(error) -> str:
 
 @app.before_request
 def authenticate():
-    """Authenticates a user before request"""
+    """Authenticates a user before processing a request.
+    """
     if auth:
         ex_paths = [
-            '/api/v1/status/'
+            '/api/v1/status/',
             '/api/v1/unauthorized/',
-            '/api/v1/forbidden/'
+            '/api/v1/forbidden/',
         ]
         if auth.require_auth(request.path, ex_paths):
             if auth.authorization_header(request) is None:
