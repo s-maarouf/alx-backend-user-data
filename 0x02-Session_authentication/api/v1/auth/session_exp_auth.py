@@ -13,6 +13,7 @@ class SessionExpAuth(SessionAuth):
 
     def __init__(self) -> None:
         """initializes a new SessionExpAuth instance"""
+        super().__init__()
         try:
             self.session_duration = int(os.getenv('SESSION_DURATION', '0'))
         except Exception:
