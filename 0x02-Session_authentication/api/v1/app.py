@@ -22,7 +22,7 @@ if auth_type == 'auth':
 if auth_type == 'basic_auth':
     auth = BasicAuth()
 if auth_type == "session_auth":
-    auth  = SessionAuth()
+    auth = SessionAuth()
 
 
 @app.errorhandler(404)
