@@ -1,4 +1,4 @@
-#!/usr/bin/env puthon3
+#!/usr/bin/env python3
 
 """Session expiration module"""
 
@@ -13,9 +13,10 @@ class SessionExpAuth(SessionAuth):
 
     def __init__(self) -> None:
         """initializes a new SessionExpAuth instance"""
-        session_duration = int(os.getenv('SESSION_DURATION'))
-        if not int(session_duration):
-            session_duration = 0
+        try:
+            self.session_duration = int(os.getenv('SESSION_DURATION', '0'))
+        except Exception:
+            self.session_duration = 0
 
     def create_session(self, user_id=None):
         """returns created session"""
