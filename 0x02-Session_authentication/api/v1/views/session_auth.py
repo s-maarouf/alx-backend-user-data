@@ -3,7 +3,7 @@
 """User authentification module"""
 
 import os
-from flask import jsonify, request
+from flask import abort, jsonify, request
 
 from api.v1.views import app_views
 from api.v1.views.users import User
@@ -32,3 +32,15 @@ def login() -> (str, int):
         res.set_cookie(os.getenv("SESSION_NAME"), sessiond_id)
         return res
     return jsonify({"error": "wrong password"}), 401
+
+
+@app_views.route(
+    '/api/v1/auth_session/logout',
+    methods=['DELETE'],
+    strict_slashes=False)
+def logout() -> (str, int):
+    """returns logout confirmation"""
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return ({}), 200
