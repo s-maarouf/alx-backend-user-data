@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""User authentification module"""
+
 import os
 from flask import jsonify, request
 
