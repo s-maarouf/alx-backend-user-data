@@ -40,16 +40,36 @@ class DB:
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """Finds a user in a table"""
-        session = self.__session
-        try:
-            user = session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound(
-                    "No user found for the given query arguments.")
-            return user
-        except InvalidRequestError as e:
-            session.rollback()
-            raise e
-        finally:
-            session.close()
+        """Finds a user based on a set of filters.
+        """
+        fields, values = [], []
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                fields.append(getattr(User, key))
+                values.append(value)
+            else:
+                raise InvalidRequestError()
+        result = self._session.query(User).filter(
+            tuple_(*fields).in_([tuple(values)])
+        ).first()
+        if result is None:
+            raise NoResultFound()
+        return result
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Updates a user based on a given id.
+        """
+        user = self.find_user_by(id=user_id)
+        if user is None:
+            return
+        update_source = {}
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                update_source[getattr(User, key)] = value
+            else:
+                raise ValueError()
+        self._session.query(User).filter(User.id == user_id).update(
+            update_source,
+            synchronize_session=False,
+        )
+        self._session.commit()
